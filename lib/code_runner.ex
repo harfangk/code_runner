@@ -4,15 +4,16 @@ defmodule CodeRunner do
   """
 
   @doc """
-  Hello world.
+  Public API for running code. 
 
   ## Examples
 
-      iex> CodeRunner.hello
-      :world
+      iex> CodeRunner.run("IO.puts(:hello)")
+      "hello\\n"
 
   """
-  def hello do
-    :world
+  def run(code) do
+    result = Porcelain.exec("elixir", ["-e", "#{code}"], err: :out)
+    result.out
   end
 end
