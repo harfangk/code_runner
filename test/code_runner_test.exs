@@ -19,8 +19,11 @@ defmodule CodeRunnerTest do
     assert CodeRunner.run(code2) == "** (UndefinedFunctionError) function Hello.hello/0 is undefined (module Hello is not available)\n    Hello.hello()\n    (stdlib) erl_eval.erl:670: :erl_eval.do_apply/6\n    (elixir) lib/code.ex:170: Code.eval_string/3\n\n"
   end
 
+  @tag :skip
   test "code should timeout when it takes longer than configuration timeout time" do
-    code = Process.sleep(12000)
+    IO.puts("Test Process")
+    IO.inspect(self())
+    code = Process.sleep(6000)
     assert CodeRunner.run(code) == :timeout
   end
 

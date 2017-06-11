@@ -13,7 +13,9 @@ defmodule CodeRunner do
 
   """
   def run(code) do
-    Porcelain.spawn("elixir", ["-e", "#{code}"], err: :out)
-    |> Porcelain.Process.await(5000)
+    {:ok, %Porcelain.Result{err: _, out: output, status: _}} = 
+      Porcelain.spawn("elixir", ["-e", "#{code}"], err: :out)
+      |> Porcelain.Process.await(5000)
+    output
   end
 end
