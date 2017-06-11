@@ -2,7 +2,7 @@ defmodule CodeRunnerTest do
   use ExUnit.Case
   doctest CodeRunner
 
-  test "Executing valid Elixir code returns proper output" do
+  test "executing valid Elixir code returns proper output" do
     code = "IO.puts(:hello)"
     assert CodeRunner.run(code) == "hello\n"
   end
@@ -17,6 +17,11 @@ defmodule CodeRunnerTest do
     assert CodeRunner.run(code1) == "hello\n"
     code2 = "Hello.hello()"
     assert CodeRunner.run(code2) == "** (UndefinedFunctionError) function Hello.hello/0 is undefined (module Hello is not available)\n    Hello.hello()\n    (stdlib) erl_eval.erl:670: :erl_eval.do_apply/6\n    (elixir) lib/code.ex:170: Code.eval_string/3\n\n"
+  end
+
+  test "code should timeout when it takes longer than configuration timeout time" do
+    code = Process.sleep(12000)
+    assert CodeRunner.run(code) == :timeout
   end
 
   # Unit tests
