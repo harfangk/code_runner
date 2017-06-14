@@ -13,7 +13,7 @@ defmodule CodeRunner do
 
   """
   def run(code) do
-    {:ok, %Porcelain.Result{err: _, out: output, status: _}} = 
+    {:ok, %Porcelain.Result{out: output}} = 
       Porcelain.spawn("elixir", ["-e", "#{code}"], err: :out)
       |> Porcelain.Process.await(5000)
     output
