@@ -31,6 +31,7 @@ defmodule CodeRunner.Mixfile do
   defp deps do
     [
       {:porcelain, "~> 2.0"},
+      {:poolboy, "~> 1.5"},
     ]
   end
 end
