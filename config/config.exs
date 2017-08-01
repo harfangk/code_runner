@@ -35,5 +35,5 @@ config :porcelain,
 config :code_runner,
   pool_name: :code_runner_pool,
   timeout: 5000,
-  pool_size: 100,
-  pool_overflow: 20
+  pool_size: 50,
+  pool_overflow: 10
