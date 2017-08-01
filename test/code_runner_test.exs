@@ -1,5 +1,5 @@
 defmodule CodeRunnerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest CodeRunner
 
   test "executing valid Elixir code returns proper output" do
@@ -9,19 +9,22 @@ defmodule CodeRunnerTest do
 
   test "executing invalid Elixir code returns proper error message" do
     code = "IO.puts()"
-    assert CodeRunner.run(code) == "** (UndefinedFunctionError) function IO.puts/0 is undefined or private. Did you mean one of:\n\n      * puts/1\n      * puts/2\n\n    (elixir) IO.puts()\n    (stdlib) erl_eval.erl:670: :erl_eval.do_apply/6\n    (elixir) lib/code.ex:170: Code.eval_string/3\n\n"
+    result = CodeRunner.run(code)
+    assert String.match?(result, ~r/(UndefinedFunctionError)/)
   end
 
-  test "each code should compile and run in isolated environment" do
+  test "each code should compile and run independent of one another" do
     code1 = "defmodule Hello do; def hello() do; IO.puts(:hello); end; end; Hello.hello()"
     assert CodeRunner.run(code1) == "hello\n"
     code2 = "Hello.hello()"
-    assert CodeRunner.run(code2) == "** (UndefinedFunctionError) function Hello.hello/0 is undefined (module Hello is not available)\n    Hello.hello()\n    (stdlib) erl_eval.erl:670: :erl_eval.do_apply/6\n    (elixir) lib/code.ex:170: Code.eval_string/3\n\n"
+    result = CodeRunner.run(code2)
+    assert String.match?(result, ~r/(UndefinedFunctionError)/)
   end
 
-  @tag :skip
-  test "code should timeout when it takes longer than configuration timeout time" do
-    code = Process.sleep(6000)
-    assert CodeRunner.run(code) == :timeout
+  test "code should timeout when it runs longer than the timeout duration set in config" do
+    sleep_duration = Application.fetch_env!(:code_runner, :timeout) + 1000
+    code = "Process.sleep(#{sleep_duration})"
+    result = CodeRunner.run(code)
+    assert String.match?(result, ~r/timeout/)
   end
 end
