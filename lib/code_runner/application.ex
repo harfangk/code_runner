@@ -8,10 +8,18 @@ defmodule CodeRunner.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
+    poolboy_config = [
+      {:name, {:local, :code_runner_pool}},
+      {:worker_module, CodeRunner.Worker},
+      {:size, 100},
+      {:max_overflow, 10},
+    ]
+
     # Define workers and child supervisors to be supervised
     children = [
       # Starts a worker by calling: CodeRunner.Worker.start_link(arg1, arg2, arg3)
       # worker(CodeRunner.Worker, [arg1, arg2, arg3]),
+      :poolboy.child_spec(:code_runner_pool, poolboy_config, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
