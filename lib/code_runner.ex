@@ -3,6 +3,8 @@ defmodule CodeRunner do
   Documentation for CodeRunner.
   """
 
+  @pool_name Application.fetch_env!(:code_runner, :pool_name)
+
   @doc """
   Public API for running code. 
 
@@ -13,9 +15,10 @@ defmodule CodeRunner do
 
   """
   def run(code) do
-    {:ok, %Porcelain.Result{out: output}} = 
-      Porcelain.spawn("elixir", ["-e", "#{code}"], err: :out)
-      |> Porcelain.Process.await(5000)
-    output
+    :poolboy.transaction(
+      @pool_name,
+      fn(pid) -> GenServer.call(pid, {:run_code, code}, :infinity) end,
+      :infinity
+    )
   end
 end

@@ -29,4 +29,11 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :porcelain, driver: Porcelain.Driver.Basic
+config :porcelain,
+  driver: Porcelain.Driver.Basic
+
+config :code_runner,
+  pool_name: :code_runner_pool,
+  timeout: 5000,
+  pool_size: 100,
+  pool_overflow: 20

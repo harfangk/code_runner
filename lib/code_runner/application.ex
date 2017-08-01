@@ -2,6 +2,9 @@ defmodule CodeRunner.Application do
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
+  @pool_name Application.fetch_env!(:code_runner, :pool_name)
+  @pool_size Application.fetch_env!(:code_runner, :pool_size)
+  @pool_overflow Application.fetch_env!(:code_runner, :pool_overflow)
 
   use Application
 
@@ -9,17 +12,17 @@ defmodule CodeRunner.Application do
     import Supervisor.Spec, warn: false
 
     poolboy_config = [
-      {:name, {:local, :code_runner_pool}},
-      {:worker_module, CodeRunner.Worker},
-      {:size, 100},
-      {:max_overflow, 10},
+      name: {:local, @pool_name},
+      worker_module: CodeRunner.Worker,
+      size: @pool_size,
+      max_overflow: @pool_overflow,
     ]
 
     # Define workers and child supervisors to be supervised
     children = [
       # Starts a worker by calling: CodeRunner.Worker.start_link(arg1, arg2, arg3)
       # worker(CodeRunner.Worker, [arg1, arg2, arg3]),
-      :poolboy.child_spec(:code_runner_pool, poolboy_config, [])
+      :poolboy.child_spec(@pool_name, poolboy_config, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
