@@ -10,8 +10,8 @@ defmodule CodeRunner do
 
   ## Examples
 
-      iex> CodeRunner.run("IO.puts(:hello)")
-      "hello\\n"
+      iex> CodeRunner.run("3+5")
+      "8\\n"
 
   """
   def run(code) do

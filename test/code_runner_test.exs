@@ -3,8 +3,8 @@ defmodule CodeRunnerTest do
   doctest CodeRunner
 
   test "executing valid Elixir code should return proper output" do
-    code = "IO.puts(:hello)"
-    assert CodeRunner.run(code) == "hello\n"
+    code = "2+3"
+    assert CodeRunner.run(code) == "5\n"
   end
 
   test "executing invalid Elixir code returns proper error message" do
@@ -14,8 +14,16 @@ defmodule CodeRunnerTest do
   end
 
   test "each code should compile and run independent of one another" do
-    code1 = "defmodule Hello do; def hello() do; IO.puts(:hello); end; end; Hello.hello()"
-    assert CodeRunner.run(code1) == "hello\n"
+    code1 =
+      """
+      defmodule Hello do
+        def hello() do
+          3+5
+        end
+      end
+      Hello.hello()
+      """
+    assert CodeRunner.run(code1) == "8\n"
     code2 = "Hello.hello()"
     result = CodeRunner.run(code2)
     assert String.match?(result, ~r/(UndefinedFunctionError)/)
