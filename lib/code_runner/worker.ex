@@ -12,7 +12,7 @@ defmodule CodeRunner.Worker do
   end
 
   def handle_call({:run_code, code}, _from, state) do
-    process = Porcelain.spawn("elixir", ["-e", "#{code}"], err: :out)
+    process = Porcelain.spawn("elixir", ["-e", "#{code} |> IO.inspect()"], err: :out)
 
     result = Porcelain.Process.await(process, @timeout)
 
