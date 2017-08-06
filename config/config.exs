@@ -36,4 +36,5 @@ config :code_runner,
   pool_name: :code_runner_pool,
   timeout: 5000,
   pool_size: 50,
-  pool_overflow: 10
+  pool_overflow: 10,
+  docker_image: "harfangk/elixir:1.5.1-slim"

@@ -2,6 +2,19 @@ defmodule CodeRunner.Worker do
   use GenServer
 
   @timeout Application.fetch_env!(:code_runner, :timeout)
+  @docker_args [
+    "run",
+    "-i",
+    "--rm",
+    "-m", "50m",
+    "--memory-swap=-1",
+    "--net=none",
+    "--cap-drop=all",
+    "--privileged=false",
+    Application.get_env(:code_runner, :docker_image),
+    "elixir",
+    "-e"
+  ]
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
@@ -12,7 +25,7 @@ defmodule CodeRunner.Worker do
   end
 
   def handle_call({:run_code, code}, _from, state) do
-    process = Porcelain.spawn("elixir", ["-e", "#{code} |> IO.inspect()"], err: :out)
+    process = Porcelain.spawn("docker", @docker_args ++ ["#{code} |> IO.inspect()"], err: :out)
 
     result = Porcelain.Process.await(process, @timeout)
 

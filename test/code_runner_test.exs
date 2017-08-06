@@ -37,20 +37,25 @@ defmodule CodeRunnerTest do
   end
 
   test "codes should run concurrently and take less time than they would have taken when run sequentially" do
-    pool_size = Application.fetch_env!(:code_runner, :pool_size)
-    pool_overflow = Application.fetch_env!(:code_runner, :pool_overflow)
-    task_size = Enum.min([5, pool_size + pool_overflow])
 
-    task_start_time = :os.timestamp()
+    concurrent_task_start_time = :os.timestamp()
 
-    1..task_size
+    [1, 2]
     |> Enum.map(fn(_) -> Task.async(fn -> CodeRunner.run("Process.sleep(100)") end) end)
     |> Enum.map(fn(task) -> Task.await(task, :infinity) end)
 
-    task_end_time = :os.timestamp()
+    concurrent_task_end_time = :os.timestamp()
+    concurrent_elapsed_time = :timer.now_diff(concurrent_task_end_time, concurrent_task_start_time)
 
-    elapsed_time = :timer.now_diff(task_end_time, task_start_time)
 
-    assert elapsed_time < task_size * 100_000
+    sequential_task_start_time = :os.timestamp()
+
+    [1, 2]
+    |> Enum.each(fn(_) -> CodeRunner.run("Process.sleep(100)") end) 
+
+    sequential_task_end_time = :os.timestamp()
+    sequential_elapsed_time = :timer.now_diff(sequential_task_end_time, sequential_task_start_time)
+
+    assert concurrent_elapsed_time < sequential_elapsed_time
   end
 end
