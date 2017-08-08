@@ -56,6 +56,6 @@ defmodule CodeRunnerTest do
     sequential_task_end_time = :os.timestamp()
     sequential_elapsed_time = :timer.now_diff(sequential_task_end_time, sequential_task_start_time)
 
-    assert concurrent_elapsed_time < sequential_elapsed_time
+    assert concurrent_elapsed_time < sequential_elapsed_time * 0.75
   end
 end
