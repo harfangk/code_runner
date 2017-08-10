@@ -1,19 +1,33 @@
 defmodule CodeRunner.Worker do
+  @moduledoc """
+  Worker module responsible for actually running code. Each worker process spawns a Docker container in an external process, executes the code, returns the result or timeout message.
+
+  ## Attributes
+
+  A few attributes can be adjusted in `config.exs` to change Docker image or resource consumption of each worker.
+
+  * `@timeout` - determines how long the worker will wait for the code to terminate. Default is 5000.
+  * `@docker_memory` - assigns how much memory should a sandbox Docker container should have. Default is "50m".
+  * `@docker_image` - designates which Docker image to mount a sandbox container. Default is "harfangk/elixir:latest".
+  """
+
   use GenServer
 
   @timeout Application.fetch_env!(:code_runner, :timeout)
+  @docker_memory Application.fetch_env!(:code_runner, :docker_memory)
+  @docker_image Application.fetch_env!(:code_runner, :docker_image)
+
   @docker_args [
     "run",
     "-i",
     "--rm",
-    "-m", "50m",
+    "-m", @docker_memory,
     "--memory-swap=-1",
     "--net=none",
     "--cap-drop=all",
     "--privileged=false",
-    Application.get_env(:code_runner, :docker_image),
-    "elixir",
-    "-e"
+    @docker_image,
+    "elixir", "-e"
   ]
 
   def start_link(args) do

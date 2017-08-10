@@ -1,12 +1,12 @@
 defmodule CodeRunner do
   @moduledoc """
-  Documentation for CodeRunner.
+  CodeRunner is the public interface module of this application.
   """
 
   @pool_name Application.fetch_env!(:code_runner, :pool_name)
 
   @doc """
-  Public API for running code. 
+  Executes given Elixir code in a sandbox environment concurrently and returns the result in string format. 
 
   ## Examples
 
@@ -14,6 +14,8 @@ defmodule CodeRunner do
       "8\\n"
 
   """
+
+  @spec run(code :: String.t) :: String.t
   def run(code) do
     :poolboy.transaction(
       @pool_name,
