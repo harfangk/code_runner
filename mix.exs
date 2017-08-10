@@ -22,6 +22,7 @@ defmodule CodeRunner.Mixfile do
       {:porcelain, "~> 2.0"},
       {:poolboy, "~> 1.5"},
       {:credo, "~> 0.8", only: [:dev, :test]},
+      {:ex_doc, ">= 0.0.0", only: [:dev]},
     ]
   end
 
