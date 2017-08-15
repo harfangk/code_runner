@@ -35,39 +35,39 @@ defmodule CodeRunner.Worker do
     end
   end
 
-  defp timeout() do
+  defp timeout do
     case Application.fetch_env(:code_runner, :timeout) do
       {:ok, timeout} -> timeout
       _ -> 5000
     end
   end
 
-  defp docker_image() do
+  defp docker_image do
     case Application.fetch_env(:code_runner, :docker_image) do
       {:ok, docker_image} -> docker_image
       _ -> "harfangk/elixir:latest"
     end
   end
 
-  defp docker_memory() do
+  defp docker_memory do
     case Application.fetch_env(:code_runner, :docker_memory) do
       {:ok, docker_memory} -> docker_memory
       _ -> "50m"
     end
   end
 
-  defp docker_args() do 
+  defp docker_args do
     [
-    "run",
-    "-i",
-    "--rm",
-    "-m", docker_memory(),
-    "--memory-swap=-1",
-    "--net=none",
-    "--cap-drop=all",
-    "--privileged=false",
-    docker_image(),
-    "elixir", "-e"
+      "run",
+      "-i",
+      "--rm",
+      "-m", docker_memory(),
+      "--memory-swap=-1",
+      "--net=none",
+      "--cap-drop=all",
+      "--privileged=false",
+      docker_image(),
+      "elixir", "-e"
     ]
   end
 end

@@ -22,7 +22,7 @@ defmodule CodeRunner do
     )
   end
 
-  defp pool_name() do
+  defp pool_name do
     case Application.fetch_env(:code_runner, :pool_name) do
       {:ok, pool_name} -> pool_name
       _ -> :code_runner_pool
