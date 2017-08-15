@@ -12,19 +12,30 @@ Add `code_runner` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:code_runner, "~> 0.1.0"}]
+  [{:code_runner, "~> 0.1"}]
 end
+```
+
+CodeRunner employs Docker container as sandbox, so it requires Docker
+installation. Check out official [Docker installation
+guide](https://docs.docker.com/engine/installation/) for installing Docker.
+
+Once you have installed Docker, pull the Docker image used in the application.
+For default image, run:
+
+```shell
+$ docker pull harfangk/elixir:latest
 ```
 
 ## Configuration
 
 You can configure options that can adjust the performance and resource
-consumption of this application. 
+consumption of this application.
 
 ```elixir
 config :code_runner,
   pool_name: :code_runner_pool, # name of the poolboy worker pool
-  timeout: 5000, # timeout duration until code will be forcefully terminated after 
+  timeout: 5000, # timeout duration after which code will be forcefully terminated
   pool_size: 50, # number of workers that spawns a Docker container and runs
   code
   pool_overflow: 10, # maximum number of temporary overflow workers
